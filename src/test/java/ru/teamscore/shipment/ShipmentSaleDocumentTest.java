@@ -11,13 +11,18 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ShipmentSaleDocumentTest {
-    private static final ShipmentDocument document =
-        new ShipmentDocument(StorageInfo.valueOf("someName", "someOwner"),
-            "someDocumentId", DocumentType.SALE,
-            List.of(ShipmentItem.valueOf(Item.valueOf("someId1", "someArticle1", "someTitle1",
-                    new BigDecimal("99.99")), 9),
-                ShipmentItem.valueOf(Item.valueOf("someId2", "someArticle2", "someTitle2",
-                    new BigDecimal("46.87")), 6)));
+    private static final ShipmentDocumentFactory document =
+        new ShipmentDocumentFactory(StorageInfo.valueOf("someName", "someOwner"), "someDocumentId",
+            DocumentType.SALE, List.of(ShipmentItem.valueOf(
+                Item.valueOf("someId1", "someArticle1", "someTitle1", new BigDecimal("99.99")), 9),
+            ShipmentItem.valueOf(
+                Item.valueOf("someId2", "someArticle2", "someTitle2", new BigDecimal("46.87")),
+                6))) {
+            @Override
+            protected BigDecimal applyPricePerItem(Item item, BigDecimal discount) {
+                return item.getPrice();
+            }
+        };
 
     @ParameterizedTest
     @MethodSource("provideIsWholesale")
@@ -30,10 +35,22 @@ class ShipmentSaleDocumentTest {
     }
 
     private static Stream<Arguments> provideIsWholesale() {
-        return Stream.of(
-            Arguments.of(10, true),
-            Arguments.of(15, true),
-            Arguments.of(16, false)
-        );
+        return Stream.of(Arguments.of(10, true), Arguments.of(15, true), Arguments.of(16, false));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideApplyPricePerItem")
+    void applyPricePerItem(BigDecimal discount, BigDecimal expected) {
+        ShipmentSaleDocument shipmentSaleDocument =
+            new ShipmentSaleDocument(document.getStorageInfo(), document.getDocumentId(),
+                document.getItems(), "someCustomer");
+
+        assertEquals(expected, shipmentSaleDocument.applyPricePerItem(
+            shipmentSaleDocument.getItems().getLast().getItem(), discount));
+    }
+
+    private static Stream<Arguments> provideApplyPricePerItem() {
+        return Stream.of(Arguments.of(new BigDecimal("0.3"), new BigDecimal("32.81")),
+            Arguments.of(new BigDecimal("0.10"), new BigDecimal("42.19")));
     }
 }

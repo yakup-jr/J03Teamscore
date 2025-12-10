@@ -9,15 +9,16 @@ import java.util.List;
  * Бывает двух типов: перемещение (на другой склад) и продажа (покупателю).
  *
  */
-class ShipmentDocument {
+abstract class ShipmentDocumentFactory {
     private final StorageInfo storageInfo;
     private final String documentId; // GUID документа
     private final LocalDateTime documentDate; // дата документа
     private final DocumentType documentType; // тип отгрузки: sale - продажа, moving - перемещение
     private final List<ShipmentItem> items;
 
-    protected ShipmentDocument(StorageInfo storageInfo, String documentId, DocumentType documentType,
-                               List<ShipmentItem> items) {
+    protected ShipmentDocumentFactory(StorageInfo storageInfo, String documentId,
+                                      DocumentType documentType,
+                                      List<ShipmentItem> items) {
         this.storageInfo = storageInfo;
         this.documentId = documentId;
         this.documentDate = LocalDateTime.now();
@@ -54,13 +55,14 @@ class ShipmentDocument {
     /**
      * Суммарная стоимость товаров, попадающих в список промо-акции.
      */
-    protected double promoSum(String[] promoArticles) {
+    protected double promoSum(String[] promoArticles, BigDecimal discount) {
         BigDecimal sum = new BigDecimal("0");
 
         for (ShipmentItem item : items) {
             for (String promoArticle : promoArticles) {
                 if (item.getItem().getArticle().equals(promoArticle)) {
-                    sum = sum.add(item.getPrice().multiply(new BigDecimal(item.getQuantity())));
+                    sum = sum.add(applyPricePerItem(item.getItem(), discount).multiply(
+                        new BigDecimal(item.getQuantity())));
                     break;
                 }
             }
@@ -68,6 +70,8 @@ class ShipmentDocument {
 
         return sum.doubleValue();
     }
+
+    protected abstract BigDecimal applyPricePerItem(Item item, BigDecimal discount);
 
     protected StorageInfo getStorageInfo() {
         return storageInfo;

@@ -1,15 +1,21 @@
 package ru.teamscore.shipment;
 
+import java.math.BigDecimal;
 import java.util.List;
 
-public class ShipmentMoveDocument extends ShipmentDocument {
+public class ShipmentMoveDocument extends ShipmentDocumentFactory {
     private final StorageInfo moveToStorageInfo;
 
     public ShipmentMoveDocument(StorageInfo storageInfo, String documentId,
-                                   List<ShipmentItem> items,
-                                   StorageInfo moveToStorageInfo) {
+                                List<ShipmentItem> items,
+                                StorageInfo moveToStorageInfo) {
         super(storageInfo, documentId, DocumentType.MOVING, items);
         this.moveToStorageInfo = moveToStorageInfo;
+    }
+
+    @Override
+    protected BigDecimal applyPricePerItem(Item item, BigDecimal discount) {
+        return item.getPrice();
     }
 
     /**

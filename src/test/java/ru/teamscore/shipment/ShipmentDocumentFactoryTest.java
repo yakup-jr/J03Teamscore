@@ -7,15 +7,20 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-class ShipmentDocumentTest {
+class ShipmentDocumentFactoryTest {
 
-    private static final ShipmentDocument document =
-        new ShipmentDocument(StorageInfo.valueOf("someName", "someOwner"),
+    private static final ShipmentDocumentFactory document =
+        new ShipmentDocumentFactory(StorageInfo.valueOf("someName", "someOwner"),
             "someDocumentId", DocumentType.MOVING,
             List.of(ShipmentItem.valueOf(Item.valueOf("someId1", "someArticle1", "someTitle1",
                     new BigDecimal("99.99")), 9),
                 ShipmentItem.valueOf(Item.valueOf("someId2", "someArticle2", "someTitle2",
-                    new BigDecimal("46.87")), 6)));
+                    new BigDecimal("46.87")), 6))) {
+            @Override
+            protected BigDecimal applyPricePerItem(Item item, BigDecimal discount) {
+                return item.getPrice();
+            }
+        };
 
     @Test
     void totalAmount() {
@@ -25,10 +30,5 @@ class ShipmentDocumentTest {
     @Test
     void itemAmount() {
         assertEquals(281.22, document.itemAmount("someId2"));
-    }
-
-    @Test
-    void promoSum() {
-        assertEquals(899.91, document.promoSum(new String[]{"someArticle1"}));
     }
 }
