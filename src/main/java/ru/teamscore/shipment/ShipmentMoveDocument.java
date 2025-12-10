@@ -6,7 +6,7 @@ public class ShipmentMoveDocument extends ShipmentDocument {
     private final StorageInfo moveToStorageInfo;
 
     public ShipmentMoveDocument(StorageInfo storageInfo, String documentId,
-                                   List<OrderItem> items,
+                                   List<ShipmentItem> items,
                                    StorageInfo moveToStorageInfo) {
         super(storageInfo, documentId, DocumentType.MOVING, items);
         this.moveToStorageInfo = moveToStorageInfo;

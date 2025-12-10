@@ -6,7 +6,7 @@ public class ShipmentSaleDocument extends ShipmentDocument {
     private final String customer;
 
     protected ShipmentSaleDocument(StorageInfo storageInfo, String documentId,
-                                   List<OrderItem> items, String customer) {
+                                   List<ShipmentItem> items, String customer) {
         super(storageInfo, documentId, DocumentType.SALE, items);
         this.customer = customer;
     }
@@ -21,7 +21,7 @@ public class ShipmentSaleDocument extends ShipmentDocument {
         }
         double sumQuantity = 0;
 
-        for (OrderItem item : super.getItems()) {
+        for (ShipmentItem item : super.getItems()) {
             if (item.getQuantity() > minQuantity) {
                 return true;
             }

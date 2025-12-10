@@ -12,9 +12,9 @@ class ShipmentDocumentTest {
     private static final ShipmentDocument document =
         new ShipmentDocument(StorageInfo.valueOf("someName", "someOwner"),
             "someDocumentId", DocumentType.MOVING,
-            List.of(OrderItem.valueOf(Item.valueOf("someId1", "someArticle1", "someTitle1",
+            List.of(ShipmentItem.valueOf(Item.valueOf("someId1", "someArticle1", "someTitle1",
                     new BigDecimal("99.99")), 9),
-                OrderItem.valueOf(Item.valueOf("someId2", "someArticle2", "someTitle2",
+                ShipmentItem.valueOf(Item.valueOf("someId2", "someArticle2", "someTitle2",
                     new BigDecimal("46.87")), 6)));
 
     @Test

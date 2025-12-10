@@ -14,10 +14,10 @@ class ShipmentDocument {
     private final String documentId; // GUID документа
     private final LocalDateTime documentDate; // дата документа
     private final DocumentType documentType; // тип отгрузки: sale - продажа, moving - перемещение
-    private final List<OrderItem> items;
+    private final List<ShipmentItem> items;
 
     protected ShipmentDocument(StorageInfo storageInfo, String documentId, DocumentType documentType,
-                               List<OrderItem> items) {
+                               List<ShipmentItem> items) {
         this.storageInfo = storageInfo;
         this.documentId = documentId;
         this.documentDate = LocalDateTime.now();
@@ -31,7 +31,7 @@ class ShipmentDocument {
     protected double totalAmount() {
         BigDecimal sum = new BigDecimal("0");
 
-        for (OrderItem item : items) {
+        for (ShipmentItem item : items) {
             sum = sum.add(item.getPrice().multiply(new BigDecimal(item.getQuantity())));
         }
 
@@ -42,7 +42,7 @@ class ShipmentDocument {
      * Стоимость товара с переданным id.
      */
     protected double itemAmount(String id) {
-        for (OrderItem item : items) {
+        for (ShipmentItem item : items) {
             if (item.getItem().getId().equals(id)) {
                 return item.getPrice().multiply(new BigDecimal(item.getQuantity())).doubleValue();
             }
@@ -57,7 +57,7 @@ class ShipmentDocument {
     protected double promoSum(String[] promoArticles) {
         BigDecimal sum = new BigDecimal("0");
 
-        for (OrderItem item : items) {
+        for (ShipmentItem item : items) {
             for (String promoArticle : promoArticles) {
                 if (item.getItem().getArticle().equals(promoArticle)) {
                     sum = sum.add(item.getPrice().multiply(new BigDecimal(item.getQuantity())));
@@ -85,7 +85,7 @@ class ShipmentDocument {
         return documentType;
     }
 
-    protected List<OrderItem> getItems() {
+    protected List<ShipmentItem> getItems() {
         return items;
     }
 }
