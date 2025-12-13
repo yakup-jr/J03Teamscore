@@ -25,9 +25,4 @@ public class Inn {
     public InnType getInnType() {
         return innType;
     }
-
-    enum InnType {
-        ORGANIZATION,
-        PHYSICS
-    }
 }
