@@ -1,6 +1,7 @@
 package ru.teamscore.supplier;
 
 import java.math.BigDecimal;
+import java.util.regex.Pattern;
 
 public class Item {
     private String name;
@@ -17,6 +18,9 @@ public class Item {
 
     public static Item valueOf(String name, BigDecimal price, String partNumber,
                                Supplier supplier) {
+        if (!Pattern.compile("^\\d{10,15}$").matcher(partNumber).find()) {
+            throw new IllegalArgumentException("Part number must contains only 10-15 digit");
+        }
         return new Item(name, supplier.getFinalPrice(price), partNumber, supplier);
     }
 

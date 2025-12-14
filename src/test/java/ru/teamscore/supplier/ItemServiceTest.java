@@ -27,9 +27,9 @@ class ItemServiceTest {
         Dealer dealer = Dealer.valueOf(Inn.valueOf("1111111117"), "Dealer", address2,
             new BigDecimal("10"), producer);
 
-        Item item1 = Item.valueOf("Item A", new BigDecimal("100"), "001", producer);
-        Item item2 = Item.valueOf("Item B", new BigDecimal("200"), "002", dealer);
-        Item item3 = Item.valueOf("Item C", new BigDecimal("300"), "003", producer);
+        Item item1 = Item.valueOf("Item A", new BigDecimal("100"), "0000000001", producer);
+        Item item2 = Item.valueOf("Item B", new BigDecimal("200"), "0000000002", dealer);
+        Item item3 = Item.valueOf("Item C", new BigDecimal("300"), "0000000003", producer);
 
         itemService = new ItemService(List.of(item1, item2, item3));
     }
@@ -95,15 +95,15 @@ class ItemServiceTest {
 
     private static Stream<Arguments> provideFindByItemPartNumber() {
         return Stream.of(
-            Arguments.of("001", "Item A", new BigDecimal("100")),
-            Arguments.of("002", "Item B", new BigDecimal("220.00")),
-            Arguments.of("003", "Item C", new BigDecimal("300"))
+            Arguments.of("0000000001", "Item A", new BigDecimal("100")),
+            Arguments.of("0000000002", "Item B", new BigDecimal("220.00")),
+            Arguments.of("0000000003", "Item C", new BigDecimal("300"))
         );
     }
 
     @Test
     void findByItemPartNumber_whenNotFound_returnEmptyOptional() {
-        Optional<ItemModel> result = itemService.findByItemPartNumber("999");
+        Optional<ItemModel> result = itemService.findByItemPartNumber("0000000999");
         assertTrue(result.isEmpty());
     }
 }
